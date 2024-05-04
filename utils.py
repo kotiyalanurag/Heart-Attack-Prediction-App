@@ -161,7 +161,7 @@ def save_model(model, name):
         model (_type_): an sklearn model
         name (_type_): a name to save the model
     """
-    dir_path = os.path.join(os.getcwd(), 'model') 
+    dir_path = os.path.join(os.getcwd(), 'models') 
     file_path = os.path.join(dir_path, name)   
     
     with open(f"{file_path}", 'wb') as f:
@@ -177,7 +177,7 @@ def load_model(name):
     Returns:
         _type_: loaded model
     """
-    dir_path = os.path.join(os.getcwd(), 'model') 
+    dir_path = os.path.join(os.getcwd(), 'models') 
     file_path = os.path.join(dir_path, name)
     
     with open(f"{file_path}", "rb") as f:
