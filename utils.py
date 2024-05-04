@@ -1,10 +1,14 @@
+import os
 import yaml
-import pandas as pd
+import pickle
 
-import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
 import seaborn as sns
+import matplotlib.pyplot as plt
 
 from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 
 from sklearn.metrics import confusion_matrix, classification_report
@@ -85,6 +89,7 @@ def plot_correlation(data: pd.DataFrame):
     plt.show()
     
 def find_best_params(name, features, labels, hyperparameters):
+    
     """ A functions that returns best parameters of logistic regression or svm classifier
 
     Args:
@@ -118,3 +123,64 @@ def find_best_params(name, features, labels, hyperparameters):
         return 0
         
     return grid_search.best_params_
+
+def find_best_k(features, labels, test_features, test_labels):
+    
+    """ A functions that creates a graph that shows best k using elbow method
+
+    Args:
+        features (_type_): train features
+        labels (_type_): train labels
+        test_features (_type_): test features
+        test_labels (_type_): test labels
+    """
+    error_rate = []
+
+    for i in range(1, 10):
+    
+        knn = KNeighborsClassifier(n_neighbors = i)
+        knn.fit(features, labels)
+        pred_i = knn.predict(test_features)
+        
+        error_rate.append(np.mean(pred_i != test_labels))
+
+    plt.figure(figsize=(16, 8))
+    plt.plot(range(1, 10), error_rate, color='blue', 
+            linestyle='dashed', marker='o', 
+            markerfacecolor='red', markersize=10)
+    plt.title('Error rate vs. k-nearest neighbors')
+    plt.xlabel('K-neighbors')
+    plt.ylabel('Error rate')
+    plt.show()
+
+def save_model(model, name):
+    
+    """ A function that saves models as pickle files in 
+
+    Args:
+        model (_type_): an sklearn model
+        name (_type_): a name to save the model
+    """
+    dir_path = os.path.join(os.getcwd(), 'model') 
+    file_path = os.path.join(dir_path, name)   
+    
+    with open(f"{file_path}", 'wb') as f:
+        pickle.dump(model, f)
+        
+def load_model(name):
+    
+    """ A function that loads trained models
+
+    Args:
+        name (_type_): name of the model to be loaded
+
+    Returns:
+        _type_: loaded model
+    """
+    dir_path = os.path.join(os.getcwd(), 'model') 
+    file_path = os.path.join(dir_path, name)
+    
+    with open(f"{file_path}", "rb") as f:
+        model = pickle.load(f)
+        
+    return model
