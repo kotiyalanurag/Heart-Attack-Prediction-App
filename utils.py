@@ -11,7 +11,6 @@ from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 
-from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import GridSearchCV
 
 def read_yaml(file: yaml):
