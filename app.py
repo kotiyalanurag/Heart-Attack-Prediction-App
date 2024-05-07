@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 app = FastAPI() # initialising fastapi app [uvicorn filename:appname]
 
-MODEL_PATH = "/Users/anuragkotiyal/Desktop/Projects/Heart Attack Prediction/models/lr.pkl"
+MODEL_PATH = "/app/models/lr.pkl"
 
 class HeartAttack(BaseModel): # data validation using pydantic BaseModel
     age: int

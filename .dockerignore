@@ -1,0 +1,10 @@
+__pycache__
+data/
+env/
+.DS_Store
+logs/
+notebook/
+logger.py 
+params.yaml
+README.md
+utils.py
