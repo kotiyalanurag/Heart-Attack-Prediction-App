@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 app = FastAPI() # initialising fastapi app [uvicorn filename:appname]
 
-MODEL_PATH = "/app/models/lr.pkl"
+MODEL_PATH = "/app/models/lr.pkl" # path to model inside docker container
 
 class HeartAttack(BaseModel): # data validation using pydantic BaseModel
     age: int
