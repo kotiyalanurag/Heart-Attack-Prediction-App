@@ -1,17 +1,14 @@
 import pickle
-import numpy as np
 import pandas as pd
-
-from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
 
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-app = FastAPI()
+app = FastAPI() # initialising fastapi app [uvicorn filename:appname]
 
-class HeartAttack(BaseModel):
+MODEL_PATH = "/Users/anuragkotiyal/Desktop/Projects/Heart Attack Prediction/models/lr.pkl"
+
+class HeartAttack(BaseModel): # data validation using pydantic BaseModel
     age: int
     sex: int
     cp: int
@@ -19,28 +16,31 @@ class HeartAttack(BaseModel):
     chol: int
     fbs: int
     restecg: int
-    thalanch: int
+    thalachh: int
     exng: int
     oldpeak: float
     slp: int
     caa: int
     thall: int
 
-with open('scaler.pkl', 'rb') as f:
+with open('scaler.pkl', 'rb') as f: # load data scaler used during model training
     scaler = pickle.load(f)
     
-MODEL_PATH = "/Users/anuragkotiyal/Desktop/Projects/Heart Attack Prediction/models/lr.pkl"
-with open(f"{MODEL_PATH}", "rb") as f:
+with open(f"{MODEL_PATH}", "rb") as f: # load trained model - LR, KNN, SVC
     model = pickle.load(f)
 
-@app.get("/")
+@app.get("/") # health status check function
 def read_root():
+    
     return {"Health status:": "OK"}
 
-@app.post("/predict")
-def predict(data: HeartAttack):
-    sample = pd.DataFrame((data.dict().values()), columns = data.dict().keys())    
-    # test_sample = scaler.transform(sample)
-    # prediction = model.predict(test_sample)
+@app.post("/predict") # make prediction for a sample function
+def make_prediction(item:HeartAttack):
     
-    return {"Prediction:", sample}
+    sample = pd.DataFrame([item.model_dump()])  # save sample as a dataframe
+    test_sample = scaler.transform(sample)   # scale sample using standard scaler
+    prediction = model.predict(test_sample)    # predict using trained model                 
+    
+    class_name = {0: "low chance", 1: "high chance"}    # actual class labels for 0 & 1
+    
+    return {"Prediction": class_name[int(prediction)]}  # return predicted label as a dictionary
